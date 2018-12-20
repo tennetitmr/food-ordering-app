@@ -30,20 +30,15 @@ class Home extends Component {
 
     componentDidMount() {
         this.findAllRestaurant();
-        //console.log(this.state.restaurants);
     };
 
-    /**
-     * search handler for restaurant name
-     */
     searchChangeHandler = (e) => {
         let restaurantName = e.target.value;
         this.searchRestaurantByName(restaurantName);
     }
 
     /**
-     * this method finds all restaurant by its name
-     * @param restaurantName name of searched restaurant
+     * Find Restaurant By Name
      */
     searchRestaurantByName(restaurantName){
         if(restaurantName === "") {
@@ -74,15 +69,10 @@ class Home extends Component {
 
     }
 
-    /**
-     * this method fetches all list of restaurant
-     */
     findAllRestaurant() {
         let resourcePath = "/restaurant";
         let xhr = new XMLHttpRequest();
         let that = this;
-
-        //  console.log("baseurl : " + this.props.baseUrl + resourcePath);
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4 && this.status === 200) {
                 that.setState({
@@ -90,7 +80,7 @@ class Home extends Component {
                 });
             } else {
                 that.setState({errorResponse: this.responseText});
-                //  console.log(this.responseText);
+              
             }
         });
 
