@@ -1,3 +1,4 @@
+/***css for Details component**//
 .details-container{
     width:100%;
 }
@@ -11,7 +12,7 @@
     margin:0;
     padding: 10px;
     display:inline-block;
-
+    
 }
 
 .restaurant-image {
@@ -37,12 +38,10 @@
     text-align: center;
 }
 
-/*Appending a , for every category item in restaurant info */
 .cat-item:after{
     content: ", ";
 }
 
-/*NOT Appending a , for the category item in restaurant info */
 .cat-item:last-child:after{
     content: "";
 }
@@ -86,7 +85,7 @@
 
 .cat-heading {
     margin:0;
-    color: grey;
+    color: grey; 
     font-size: 110%;
     text-transform: uppercase;
     font-weight:bold;
@@ -116,7 +115,7 @@
     padding:0;
     text-transform: capitalize;
 }
-
+    
 .cart-container {
     display:block;
     width: 100%;
@@ -127,11 +126,11 @@
 }
 
 .card-card-heading {
-
+    
 }
 
 .cart-table{
-    padding: 0 2% 0 4%;
+    padding: 0 3% 0 4%;
 }
 
 .cart-heading {
@@ -144,8 +143,13 @@
     text-transform: capitalize;
 }
 
+.cart-item-qty {
+    text-align: center;
+}
+
 .menu-item-amount{
-    color:grey;
+    color:grey;    
+    text-align: right;
 }
 
 .total-amount-heading {
@@ -156,11 +160,12 @@
 .total-amount {
     margin: 5%;
     font-weight:bold;
+    text-align: right;
 }
 
 .cart-button {
     margin: 5%;
-
+    
 }
 .checkout-button {
     width: 100%;
@@ -176,11 +181,11 @@
     .restaurant-locality{
         text-align: left;
     }
-
+    
     .restaurant-categories{
         text-align: left;
     }
-
+    
     .restaurant-rating{
         text-align: left;
     }
@@ -199,7 +204,7 @@
     .cat-container {
         overflow: hidden;
     }
-
+    
     .cart-container {
         display:inline-block;
         width: 50%;
