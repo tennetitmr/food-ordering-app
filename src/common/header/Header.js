@@ -40,9 +40,9 @@ const customStyles = {
 const TabContainer = function (props) {
     return (
         <Typography component="div" style={{padding: 0, textAlign: 'center', width: 'parent'}}>
-    {props.children}
-</Typography>
-)
+            {props.children}
+        </Typography>
+    )
 };
 
 TabContainer.propTypes = {
@@ -372,230 +372,230 @@ class Header extends Component {
     render() {
         const renderMenu = (
             <Menu
-        id="menu-list-grow"
-        open={this.state.showUserProfileDropDown}
-        anchorEl={this.state.anchorEl}
-        onClose={this.handleCloseMenu}
-        anchorOrigin={{
-            vertical: 'bottom',
-                horizontal: 'center',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-                horizontal: 'center',
-        }}
+                id="menu-list-grow"
+                open={this.state.showUserProfileDropDown}
+                anchorEl={this.state.anchorEl}
+                onClose={this.handleCloseMenu}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
 
-        getContentAnchorEl={null}
+                getContentAnchorEl={null}
             >
 
-            <MenuItem onClick={this.profileClickHandler}>Profile</MenuItem>
-        <MenuItem onClick={this.logoutClickHandler}>Logout</MenuItem>
-        </Menu>
-    );
+                <MenuItem onClick={this.profileClickHandler}>Profile</MenuItem>
+                <MenuItem onClick={this.logoutClickHandler}>Logout</MenuItem>
+            </Menu>
+        );
         return (
             <div>
-            <header className="app-header">
-            <Grid container
-        direction="row"
-        justify="flex-start"
-        alignItems="center">
-            <Grid item lg={3} xs={12}>
-            <IconButton color="inherit" aria-label="Open drawer">
-            <Fastfood/>
-            </IconButton>
-            </Grid>
-            <Grid item lg={3} xs={12}>
-            <div className="searchIcon">
-            <SearchIcon/>
-            </div>
-            <Input className="inputInput"
-        placeholder="Search by Restaurant Name"
-        onChange={this.props.onChange}
-        />
-        </Grid>
-        <Grid item lg={3} xs={12}>
-            <IconButton color="inherit" aria-label="Open drawer">
-            <Toc/> Categories
-            </IconButton>
-            </Grid>
-            <Grid item lg={3} xs={12}>
-            {!this.state.loggedIn ?
-    <div className="login-button">
+                <header className="app-header">
+                    <Grid container
+                          direction="row"
+                          justify="flex-start"
+                          alignItems="center">
+                        <Grid item lg={3} xs={12}>
+                            <IconButton color="inherit" aria-label="Open drawer">
+                                <Fastfood/>
+                            </IconButton>
+                        </Grid>
+                        <Grid item lg={3} xs={12}>
+                            <div className="searchIcon">
+                                <SearchIcon/>
+                            </div>
+                            <Input className="inputInput"
+                                   placeholder="Search by Restaurant Name"
+                                   onChange={this.props.onChange}
+                            />
+                        </Grid>
+                        <Grid item lg={3} xs={12}>
+                            <IconButton color="inherit" aria-label="Open drawer">
+                                <Toc/> Categories
+                            </IconButton>
+                        </Grid>
+                        <Grid item lg={3} xs={12}>
+                            {!this.state.loggedIn ?
+                                <div className="login-button">
 
-            <Button variant="contained" color="default" onClick={this.openModalHandler}>
-    <AccountCircle className="account-circle"/>
-            Login
-            </Button>
-            </div>
-    :
-    <div>
-        <Button
-        variant="contained"
-        color="default"
-        aria-owns={this.state.showUserProfileDropDown ? 'menu-list-grow' : undefined}
-        aria-haspopup="true"
-        onClick={this.profileIconClickHandler}>
+                                    <Button variant="contained" color="default" onClick={this.openModalHandler}>
+                                        <AccountCircle className="account-circle"/>
+                                        Login
+                                    </Button>
+                                </div>
+                                :
+                                <div>
+                                    <Button
+                                        variant="contained"
+                                        color="default"
+                                        aria-owns={this.state.showUserProfileDropDown ? 'menu-list-grow' : undefined}
+                                        aria-haspopup="true"
+                                        onClick={this.profileIconClickHandler}>
 
-    <AccountCircle className="account-circle"/>
-            {sessionStorage.getItem('loggedInUserName')}
+                                        <AccountCircle className="account-circle"/>
+                                        {sessionStorage.getItem('loggedInUserName')}
 
-    </Button>
-        {renderMenu}
+                                    </Button>
+                                    {renderMenu}
 
-    </div>
-    }
-    </Grid>
-        </Grid>
-        </header>
-        {/*modal for login and sign up*/}
-    <Modal
-        ariaHideApp={false}
-        isOpen={this.state.modalIsOpen}
-        contentLabel="Login"
-        onRequestClose={this.closeModalHandler}
-        style={customStyles}
-            >
-            <Tabs className="tabs" value={this.state.value} onChange={this.tabChangeHandler}>
-    <Tab label="LOGIN"/>
-            <Tab label="SIGNUP"/>
-            </Tabs>
-        {/*signin page detail*/}
-        {this.state.value === 0 &&
-        <TabContainer>
-        <FormControl required>
-        <InputLabel htmlFor="username">Contact No.</InputLabel>
-        <Input id="username" type="number" username={this.state.username}
-            onChange={this.inputUsernameChangeHandler}/>
-        <FormHelperText className={this.state.usernameRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            <FormHelperText className={this.state.isLoggedInContactValid}>
-        <span className="red">Invalid Contact</span>
-        </FormHelperText>
-        </FormControl>
-        <br/><br/>
-        <FormControl required>
-        <InputLabel htmlFor="loginPassword">Password</InputLabel>
-            <Input id="loginPassword" type="password" loginpassword={this.state.loginPassword}
-            onChange={this.inputLoginPasswordChangeHandler}/>
-        <FormHelperText className={this.state.loginPasswordRequired}>
-        <span className="red">required</span>
-        </FormHelperText>
-        </FormControl>
-        <br/><br/>
-        {this.state.loggedIn === true ?
-        <FormControl>
+                                </div>
+                            }
+                        </Grid>
+                    </Grid>
+                </header>
+                {/*modal for login and sign up*/}
+                <Modal
+                    ariaHideApp={false}
+                    isOpen={this.state.modalIsOpen}
+                    contentLabel="Login"
+                    onRequestClose={this.closeModalHandler}
+                    style={customStyles}
+                >
+                    <Tabs className="tabs" value={this.state.value} onChange={this.tabChangeHandler}>
+                        <Tab label="LOGIN"/>
+                        <Tab label="SIGNUP"/>
+                    </Tabs>
+                    {/*signin page detail*/}
+                    {this.state.value === 0 &&
+                    <TabContainer>
+                        <FormControl required>
+                            <InputLabel htmlFor="username">Contact No.</InputLabel>
+                            <Input id="username" type="number" username={this.state.username}
+                                   onChange={this.inputUsernameChangeHandler}/>
+                            <FormHelperText className={this.state.usernameRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                            <FormHelperText className={this.state.isLoggedInContactValid}>
+                                <span className="red">Invalid Contact</span>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        <FormControl required>
+                            <InputLabel htmlFor="loginPassword">Password</InputLabel>
+                            <Input id="loginPassword" type="password" loginpassword={this.state.loginPassword}
+                                   onChange={this.inputLoginPasswordChangeHandler}/>
+                            <FormHelperText className={this.state.loginPasswordRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        {this.state.loggedIn === true ?
+                            <FormControl>
         <span className="successText">
             Login Successful!
         </span>
-        </FormControl>
-        :
-        <FormControl>
+                            </FormControl>
+                            :
+                            <FormControl>
         <span className="red">
             {this.state.errorResponse}
         </span>
-        </FormControl>
-        }
-        <br/><br/>
-        <Button variant="contained" color="primary" onClick={this.loginClickHandler}>LOGIN</Button>
-        </TabContainer>
-        }
-        {/*signup  page ...................*/}
-        {this.state.value === 1 &&
-        <TabContainer>
-        <FormControl required>
-        <InputLabel htmlFor="firstname">First Name</InputLabel>
-        <Input id="firstname" type="text" firstname={this.state.firstname}
-            onChange={this.inputFirstNameChangeHandler}/>
-        <FormHelperText className={this.state.firstnameRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            </FormControl>
-            <br/><br/>
-            <FormControl>
-            <InputLabel htmlFor="lastname">Last Name</InputLabel>
-        <Input id="lastname" type="text" lastname={this.state.lastname}
-            onChange={this.inputLastNameChangeHandler}/>
-        <FormHelperText className={this.state.lastnameRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            </FormControl>
-            <br/><br/>
-            <FormControl required>
-        <InputLabel htmlFor="email">Email</InputLabel>
-            <Input id="email" type="email" email={this.state.email}
-            onChange={this.inputEmailChangeHandler}/>
-        <FormHelperText className={this.state.emailRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            <FormHelperText className={this.state.isEmailValid}>
-        <span className="red">Invalid Email</span>
-        </FormHelperText>
-        </FormControl>
-        <br/><br/>
-        <FormControl required>
-        <InputLabel htmlFor="registerPassword">Password</InputLabel>
-            <Input id="registerPassword" type="password" registerpassword={this.state.registerPassword}
-            onChange={this.inputRegisterPasswordChangeHandler}/>
-        <FormHelperText className={this.state.registerPasswordRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            <FormHelperText className={this.state.isPassValid}>
+                            </FormControl>
+                        }
+                        <br/><br/>
+                        <Button variant="contained" color="primary" onClick={this.loginClickHandler}>LOGIN</Button>
+                    </TabContainer>
+                    }
+                    {/*signup  page ...................*/}
+                    {this.state.value === 1 &&
+                    <TabContainer>
+                        <FormControl required>
+                            <InputLabel htmlFor="firstname">First Name</InputLabel>
+                            <Input id="firstname" type="text" firstname={this.state.firstname}
+                                   onChange={this.inputFirstNameChangeHandler}/>
+                            <FormHelperText className={this.state.firstnameRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        <FormControl>
+                            <InputLabel htmlFor="lastname">Last Name</InputLabel>
+                            <Input id="lastname" type="text" lastname={this.state.lastname}
+                                   onChange={this.inputLastNameChangeHandler}/>
+                            <FormHelperText className={this.state.lastnameRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        <FormControl required>
+                            <InputLabel htmlFor="email">Email</InputLabel>
+                            <Input id="email" type="email" email={this.state.email}
+                                   onChange={this.inputEmailChangeHandler}/>
+                            <FormHelperText className={this.state.emailRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                            <FormHelperText className={this.state.isEmailValid}>
+                                <span className="red">Invalid Email</span>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        <FormControl required>
+                            <InputLabel htmlFor="registerPassword">Password</InputLabel>
+                            <Input id="registerPassword" type="password" registerpassword={this.state.registerPassword}
+                                   onChange={this.inputRegisterPasswordChangeHandler}/>
+                            <FormHelperText className={this.state.registerPasswordRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                            <FormHelperText className={this.state.isPassValid}>
         <span className="red">Password must contain at least one capital letter, one small letter,
             one number, and one special character</span>
-        </FormHelperText>
-        </FormControl>
-        <br/><br/>
-        <FormControl required>
-        <InputLabel htmlFor="contact">Contact No.</InputLabel>
-        <Input id="contact" type="text" contact={this.state.contact}
-            onChange={this.inputContactChangeHandler}/>
-        <FormHelperText className={this.state.contactRequired}>
-        <span className="red">required</span>
-            </FormHelperText>
-            <FormHelperText className={this.state.isContactValid}>
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        <FormControl required>
+                            <InputLabel htmlFor="contact">Contact No.</InputLabel>
+                            <Input id="contact" type="text" contact={this.state.contact}
+                                   onChange={this.inputContactChangeHandler}/>
+                            <FormHelperText className={this.state.contactRequired}>
+                                <span className="red">required</span>
+                            </FormHelperText>
+                            <FormHelperText className={this.state.isContactValid}>
         <span
             className="red">Contact No. must contain only numbers and must be 10 digits long</span>
-        </FormHelperText>
-        </FormControl>
-        <br/><br/>
-        {this.state.registrationSuccess === true ?
-        <div>
-        <FormHelperText>
-        <span>{this.state.errorResponse}</span>
-        </FormHelperText>
-        </div>
-        :
-        <div>
-        <FormHelperText>
-        <span className="red">{this.state.errorResponse}</span>
-        </FormHelperText>
-        </div>
-        }
-        <br/><br/>
-        <Button variant="contained" color="primary"
-            onClick={this.signUpClickHandler}>SIGNUP</Button>
-        </TabContainer>
-        }
-    </Modal>
-        {/*notification snack bar */}
-    <div>
-        <Snackbar
-        anchorOrigin={{
-            vertical: 'bottom',
-                horizontal: 'left',
-        }}
-        open={this.state.openSnackBar}
-        autoHideDuration={6000}
-        onClose={this.handleClose}
-        ContentProps={{
-            'aria-describedby': 'message-id',
-        }}
-        message={<span id="message-id">{this.state.successMessage}</span>}
-        />
-        </div>
-        </div>
-    )
+                            </FormHelperText>
+                        </FormControl>
+                        <br/><br/>
+                        {this.state.registrationSuccess === true ?
+                            <div>
+                                <FormHelperText>
+                                    <span>{this.state.errorResponse}</span>
+                                </FormHelperText>
+                            </div>
+                            :
+                            <div>
+                                <FormHelperText>
+                                    <span className="red">{this.state.errorResponse}</span>
+                                </FormHelperText>
+                            </div>
+                        }
+                        <br/><br/>
+                        <Button variant="contained" color="primary"
+                                onClick={this.signUpClickHandler}>SIGNUP</Button>
+                    </TabContainer>
+                    }
+                </Modal>
+                {/*notification snack bar */}
+                <div>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.openSnackBar}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.successMessage}</span>}
+                    />
+                </div>
+            </div>
+        )
     }
 }
 
