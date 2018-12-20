@@ -2,16 +2,16 @@ import React, {Component} from 'react';
 import '../checkout/Checkout.css';
 import Header from '../../common/header/Header';
 import GridList from '@material-ui/core/GridList';
-import { GridListTile, Typography } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import {GridListTile, Typography} from '@material-ui/core';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faCircle} from '@fortawesome/free-solid-svg-icons';
 import Stepper from '@material-ui/core/Stepper';
 import StepLabel from '@material-ui/core/StepLabel';
 import Step from '@material-ui/core/Step';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -19,6 +19,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -34,6 +35,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 
 library.add(faCircle);
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -42,6 +44,7 @@ const styles = theme => ({
     gridListMain: {
         flexWrap: 'nowrap',
         transform: 'translateZ(0)',
+        width: '600px'
     },
     card: {
         maxWidth: 560,
@@ -57,6 +60,20 @@ const styles = theme => ({
     },
     actions: {
         display: 'flex',
+    },
+    actionsContainer: {
+        marginBottom: theme.spacing.unit * 2,
+    },
+    snackbar: {
+        margin: theme.spacing.unit,
+    },
+    resetContainer: {
+        padding: theme.spacing.unit * 3,
+    },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 240,
+        maxWidth: 240
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -76,9 +93,11 @@ const styles = theme => ({
     }
 });
 
+
 function getSteps() {
     return ['Delivery', 'Payment'];
 }
+
 
 function isNum(val) {
     return /^\d+$/.test(val);
@@ -88,21 +107,22 @@ class Checkout extends Component {
 
     constructor() {
         super();
+
         this.state = {
-            id : "",
-            value:"",
-            location:"",
+            id: "",
+            paymentId: "",
+            location: "",
             tabValue: 0,
             activeStep: 0,
-            flat:"",
-            city:"",
+            flat: "",
+            city: "",
             open: false,
-            locality:"",
-            zipcode:"",
-            statename:"",
-            iconClass:"",
-            addressClass:"",
-            selectedIndex:"",
+            locality: "",
+            zipcode: "",
+            statename: "",
+            iconClass: "",
+            addressClass: "",
+            selectedIndex: "",
             flatRequired: "dispNone",
             cityRequired: "dispNone",
             stateRequired: "dispNone",
@@ -110,13 +130,14 @@ class Checkout extends Component {
             localityRequired: "dispNone",
             incorrectZipcode: "dispNone",
             orderPlaced: "dispNone",
-            incorrectDetails:"false",
-            address : "" ,
-            categories : [],
+            incorrectDetails: "false",
+            address: "",
+            categories: [],
             totalCartItemsValue: "",
-            orderNotificationMessage:"",
-            states:[],
-            selectedAddress:[],
+            orderNotificationMessage: "",
+            states: [],
+            stateId: '',
+            selectedAddress: [],
             cartItems: [],
             paymentModes: [],
             addresses: []
@@ -129,93 +150,108 @@ class Checkout extends Component {
             this.props.history.push('/');
         }
         else {
+            let resourcePath = "/address/user";
+            let resourcePath1 = "/payment/";
+            let resourcePath2 = "/states/";
             let data = null;
             let xhr = new XMLHttpRequest();
             let xhr1 = new XMLHttpRequest();
             let xhr2 = new XMLHttpRequest();
             let that = this;
-
+            console.log("baseurl : " + this.props.baseUrl + resourcePath);
             xhr.addEventListener("readystatechange", function () {
-                if (this.readyState === 4) {
+                if (this.readyState === 4 && this.status === 200) {
                     that.setState({
-                        addresses : JSON.parse(this.responseText)
+                        addresses: JSON.parse(this.responseText)
                     });
                 }
             });
 
-            xhr.open("GET", "http://localhost:8085/api/address/user");
+            xhr.open("GET", this.props.baseUrl + resourcePath);
             xhr.setRequestHeader("accessToken", sessionStorage.getItem("access-token"));
             xhr.send(data);
 
             xhr1.addEventListener("readystatechange", function () {
-                if (this.readyState === 4) {
+                if (this.readyState === 4 && this.status === 200) {
                     that.setState({
-                        paymentModes : JSON.parse(this.responseText)
+                        paymentModes: JSON.parse(this.responseText)
                     });
                 }
             });
 
-            xhr1.open("GET", "http://localhost:8085/api/payment");
+            xhr1.open("GET", this.props.baseUrl + resourcePath1);
             xhr1.setRequestHeader("accessToken", sessionStorage.getItem("access-token"));
             xhr1.send(data);
 
             xhr2.addEventListener("readystatechange", function () {
-                if (this.readyState === 4) {
+                if (this.readyState === 4 && this.status === 200) {
                     that.setState({
-                        states : JSON.parse(this.responseText)
+                        states: JSON.parse(this.responseText)
                     });
                 }
             });
 
-            xhr2.open("GET", "http://localhost:8085/api/states");
+            xhr2.open("GET", this.props.baseUrl + resourcePath2);
             xhr2.send(data);
         }
 
     }
 
     tabChangeHandler = (event, tabValue) => {
-        this.setState({ tabValue });
+        this.setState({tabValue});
     }
 
     locationChangeHandler = event => {
-        this.setState({ location: event.target.value });
+        this.setState({stateId: event.target.value, location: event.target.text});
     }
 
 
     handleNext = () => {
         if (this.state.tabValue === 1) {
 
-            this.state.flat === "" ? this.setState({ incorrectDetails:"true", flatRequired: "dispBlock" }) : this.setState({  incorrectDetails:"false", flatRequired: "dispNone" });
-            this.state.city === "" ? this.setState({ incorrectDetails:"true", cityRequired: "dispBlock" }) : this.setState({  incorrectDetails:"false",cityRequired: "dispNone" });
-            this.state.locality === "" ? this.setState({ incorrectDetails:"true", localityRequired: "dispBlock" }) : this.setState({  incorrectDetails:"false", localityRequired: "dispNone" });
-            this.state.zipcode === "" ? this.setState({ incorrectDetails:"true", zipcodeRequired: "dispBlock" }) : this.setState({  incorrectDetails:"false",zipcodeRequired: "dispNone" });
-            if (this.state.zipcode !=="" ) {
+            this.state.flat === "" ? this.setState({
+                incorrectDetails: "true",
+                flatRequired: "dispBlock"
+            }) : this.setState({incorrectDetails: "false", flatRequired: "dispNone"});
+            this.state.city === "" ? this.setState({
+                incorrectDetails: "true",
+                cityRequired: "dispBlock"
+            }) : this.setState({incorrectDetails: "false", cityRequired: "dispNone"});
+            this.state.locality === "" ? this.setState({
+                incorrectDetails: "true",
+                localityRequired: "dispBlock"
+            }) : this.setState({incorrectDetails: "false", localityRequired: "dispNone"});
+            this.state.zipcode === "" ? this.setState({
+                incorrectDetails: "true",
+                zipcodeRequired: "dispBlock"
+            }) : this.setState({incorrectDetails: "false", zipcodeRequired: "dispNone"});
+            if (this.state.zipcode !== "") {
                 if (this.state.zipcode.length === 6 && isNum(this.state.zipcode)) {
-                    this.setState({ incorrectDetails:"false", incorrectZipcode: "dispNone" })
+                    this.setState({incorrectDetails: "false", incorrectZipcode: "dispNone"})
                 }
                 else {
-                    this.setState({ incorrectDetails:"true", incorrectZipcode: "dispBlock" })
+                    this.setState({incorrectDetails: "true", incorrectZipcode: "dispBlock"})
                 }
             }
             if (this.state.incorrectDetails === "false") {
-                var savedAddress = {
+                let  savedAddress = {
                     "id": "",
                     "flatBuilNo": this.state.flatBuilNo,
                     "locality": this.state.locality,
                     "city": this.state.city,
                     "zipcode": this.state.zipcode,
                     "state": {
-                        "id": "",
+                        "id": this.state.stateId,
                         "stateName": this.state.location
                     }
                 }
-                this.setState(state => ({
+                this.setState({
                     selectedAddress: savedAddress,
-                }));
+                });
             }
         }
 
-        if (this.state.activeStep === 1 && this.state.value!=="") {
+        if (this.state.activeStep === 1 && this.state.paymentId !== "") {
             this.setState(state => ({
                 orderPlaced: "dispBlock",
                 activeStep: state.activeStep + 1
@@ -242,47 +278,48 @@ class Checkout extends Component {
         });
     };
 
-    handleChange = event => {
-        this.setState({ value: event.target.value });
+    paymentHandleChange = event => {
+        console.log("payment handler.............")
+        this.setState({paymentId: event.target.value});
     };
 
     inputFlatChangeHandler = (e) => {
         this.setState({
-            flat: e.target.value,
+            flatBuilNo: e.target.value,
         });
     }
 
     inputCityChangeHandler = (e) => {
-        this.setState({ city: e.target.value });
+        this.setState({city: e.target.value});
     }
 
     inputLocalityChangeHandler = (e) => {
-        this.setState({ locality: e.target.value });
+        this.setState({locality: e.target.value});
     }
 
     inputZipcodeChangeHandler = (e) => {
-        this.setState({ zipcode: e.target.value });
+        this.setState({zipcode: e.target.value});
     }
 
     inputStateChangeHandler = (e) => {
-        this.setState({ statename: e.target.value });
+        this.setState({stateId: e.target.value});
     }
 
     changeHandler = () => {
-        ReactDOM.render(<Checkout />, document.getElementById('root'));
+        ReactDOM.render(<Checkout/>, document.getElementById('root'));
     }
 
-    iconClickHandler = (address,index) => {
+    iconClickHandler = (address, index) => {
         this.state.addresses.map(obj => (
             obj.id === address.id ?
                 this.setState({
                     selectedAddress: address,
                     selectedIndex: index,
-                    addressClass: "selectionGrid" ,
+                    addressClass: "selectionGrid",
                     iconClass: "green"
                 })
                 :
-                console.log("dint match "+obj.id)
+                console.log("dint match " + obj.id)
         ));
     }
 
@@ -292,39 +329,86 @@ class Checkout extends Component {
         });
     }
 
-    confirmOrderHandler = () => {
+    confirmOrderHandler = (name, value) => {
+        let resourcePath3 = "/order";
         let xhr = new XMLHttpRequest();
         let that = this;
-        var address = this.state.selectedAddress;
-        var parameters="adrressId="+address.id+"&flatBuilNo="+address.flatBuilNo+"&locality="+address.locality+"&city="+address.city
-            +"&zipcode="+address.zipcode+"&stateId="+address.state.id+"&bill="+this.state.totalCartItemsValue;
+        let address = this.state.selectedAddress;
+        let parameters;
+        let itemQuantities;
+
+        if (this.props.location.cartItems === undefined) {
+            that.setState({
+                open: true,
+                orderNotificationMessage: "Unable to place your order! Please try again!"
+            });
+            return;
+        } else {
+            this.props.location.cartItems.map(item => {
+                this.state.cartItems.push({
+                    "itemId": item.id,
+                    "quantity": item.quantity
+                });
+            });
+
+            itemQuantities = JSON.stringify(this.state.cartItems);
+        }
+        if (address.length === 0) {
+            that.setState({
+                open: true,
+                orderNotificationMessage: "Unable to place your order! Please try again!"
+            });
+            return;
+        }
+        if (address.id !== "") {
+            parameters = "addressId=" + address.id +
+                "&paymentId=" + Number(this.state.paymentId) +
+                "&bill=" + this.props.location.totalCartValue;
+
+        } else {
+            parameters = "flatBuilNo=" + address.flatBuilNo +
+                "&locality=" + address.locality +
+                "&city=" + address.city +
+                "&zipcode=" + address.zipcode +
+                "&stateId=" + address.state.id +
+                "&paymentId=" + Number(this.state.paymentId) +
+                "&bill=" + this.props.location.totalCartValue;
+
+        }
+
+        console.log("order placed params : " + parameters);
+        console.log("order placed body : " + itemQuantities);
+
         xhr.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
+            if (this.readyState === 4 && this.status === 200) {
                 that.setState({
-                    open:true,
-                    orderNotificationMessage : "Your order has been placed successfully!"
+                    open: true,
+                    orderNotificationMessage: "Your order placed successfully! Your order ID is " + this.responseText
                 });
             }
             else {
                 that.setState({
                     open: true,
-                    orderNotificationMessage : "Unable to place your order! Please try again!"
+                    orderNotificationMessage: "Unable to place your order! Please try again!"
                 });
             }
         });
 
-        xhr.open("GET", "http://localhost:8085/api/order");
-        xhr.send(parameters);
+        xhr.open("POST", this.props.baseUrl + resourcePath3 + "?" + parameters);
+        xhr.setRequestHeader("Content-Type", "application/json")
+        xhr.setRequestHeader("accessToken", sessionStorage.getItem("access-token"));
+        xhr.send(itemQuantities);
 
     }
 
     render() {
-        const { classes } = this.props;
+        const {classes} = this.props;
         const steps = getSteps();
-        const { activeStep } = this.state;
+        const {activeStep} = this.state;
+        const {cartItems, totalCartValue} = this.props.location;
         return (
             <div className="checkout">
-                <Header showSearch="false"/>
+                <Header {...this.props} isHomePage={false}/>
                 <div className="main-body-container">
                     <div>
                         <Stepper activeStep={activeStep} orientation="vertical">
@@ -335,35 +419,61 @@ class Checkout extends Component {
                                         <StepContent>
                                             {index === 0 &&
                                             <div>
-                                                <Tabs className="addTabs" value={this.state.tabValue} onChange={this.tabChangeHandler}>
-                                                    <Tab label="EXISTING ADDRESS" />
-                                                    <Tab label="NEW ADDRESS" />
+                                                <Tabs className="addTabs" value={this.state.tabValue}
+                                                      onChange={this.tabChangeHandler}>
+                                                    <Tab label="EXISTING ADDRESS"/>
+                                                    <Tab label="NEW ADDRESS"/>
                                                 </Tabs>
 
                                                 {this.state.tabValue === 0 &&
-                                                (this.state.addresses.length !==0 ?
-                                                        <GridList cellHeight={"auto"} className={classes.gridListMain} cols={3}>
+                                                (this.state.addresses.length !== 0 ?
+                                                        <GridList cellHeight={"auto"} className={classes.gridListMain}
+                                                                  cols={3}>
                                                             {this.state.addresses.map((address, i) => (
-                                                                <GridListTile key={i} style={{padding:'20px'}}>
-                                                                    <div id ={i} key={i} className={this.state.selectedIndex === i ? 'selectionGrid' : 'grid'}
-                                                                         style={{ padding:'10px' }}>
-                                                                        <Typography style={{ fontSize:'20px',marginRight:'20px',marginBottom:'5px'}}>{address.flatBuilNo}</Typography>
-                                                                        <Typography style={{ fontSize:'20px',marginRight:'20px',marginBottom:'10px'}}>{address.locality}</Typography>
-                                                                        <Typography style={{ fontSize:'20px',marginRight:'20px',marginBottom:'10px'}}>{address.city}</Typography>
-                                                                        <Typography style={{ fontSize:'20px',marginRight:'20px',marginBottom:'10px'}}>{address.state.stateName}</Typography>
-                                                                        <Typography style={{ fontSize:'20px',marginRight:'20px',marginBottom:'10px'}}>{address.zipcode}</Typography>
+                                                                <GridListTile key={i} style={{padding: '20px'}}>
+                                                                    <div id={i} key={i}
+                                                                         className={this.state.selectedIndex === i ? 'selectionGrid' : 'grid'}
+                                                                         style={{padding: '10px'}}>
+                                                                        <Typography style={{
+                                                                            fontSize: '20px',
+                                                                            marginRight: '20px',
+                                                                            marginBottom: '5px'
+                                                                        }}>{address.flatBuilNo}</Typography>
+                                                                        <Typography style={{
+                                                                            fontSize: '20px',
+                                                                            marginRight: '20px',
+                                                                            marginBottom: '10px'
+                                                                        }}>{address.locality}</Typography>
+                                                                        <Typography style={{
+                                                                            fontSize: '20px',
+                                                                            marginRight: '20px',
+                                                                            marginBottom: '10px'
+                                                                        }}>{address.city}</Typography>
+                                                                        <Typography style={{
+                                                                            fontSize: '20px',
+                                                                            marginRight: '20px',
+                                                                            marginBottom: '10px'
+                                                                        }}>{address.state.stateName}</Typography>
+                                                                        <Typography style={{
+                                                                            fontSize: '20px',
+                                                                            marginRight: '20px',
+                                                                            marginBottom: '10px'
+                                                                        }}>{address.zipcode}</Typography>
                                                                         <IconButton id={i} key={i}
-                                                                                    style={{marginLeft:'60%'}}
-                                                                                    onClick={() => this.iconClickHandler(address,i)}>
-                                                                            <CheckCircle className={this.state.selectedIndex === i ? 'green' : 'grid'} />
+                                                                                    style={{marginLeft: '60%'}}
+                                                                                    onClick={() => this.iconClickHandler(address, i)}>
+                                                                            <CheckCircle
+                                                                                className={this.state.selectedIndex === i ? 'green' : 'grid'}/>
                                                                         </IconButton>
                                                                     </div>
                                                                 </GridListTile>
                                                             ))}
                                                         </GridList>
                                                         :
-                                                        <div style={{marginBottom:'100px'}}>
-                                                            <Typography style={{color:'grey',fontSize:'18px'}}>There are no saved addresses! You can save an address using your ‘Profile’ menu option.</Typography>
+                                                        <div style={{marginBottom: '100px'}}>
+                                                            <Typography style={{color: 'grey', fontSize: '18px'}}>There
+                                                                are no saved addresses! You can save an address using
+                                                                your ‘Profile’ menu option.</Typography>
                                                         </div>
                                                 )}
                                                 {this.state.tabValue === 1 &&
@@ -371,38 +481,41 @@ class Checkout extends Component {
                                                     <FormControl required>
                                                         <InputLabel htmlFor="flat">Flat/Building No.</InputLabel>
                                                         <Input id="flat" type="text" flat={this.state.flat}
-                                                               onChange={this.inputFlatChangeHandler} />
+                                                               defaultValue={this.state.flat}
+                                                               onChange={this.inputFlatChangeHandler}/>
                                                         <FormHelperText className={this.state.flatRequired}>
                                                             <span className="red">required</span>
                                                         </FormHelperText>
                                                     </FormControl>
-                                                    <br /><br />
+                                                    <br/><br/>
                                                     <FormControl required>
                                                         <InputLabel htmlFor="locality">Locality</InputLabel>
                                                         <Input id="locality" locality={this.state.locality}
-                                                               onChange={this.inputLocalityChangeHandler} />
+                                                               defaultValue={this.state.locality}
+                                                               onChange={this.inputLocalityChangeHandler}/>
                                                         <FormHelperText className={this.state.localityRequired}>
                                                             <span className="red">required</span>
                                                         </FormHelperText>
                                                     </FormControl>
-                                                    <br /><br />
+                                                    <br/><br/>
                                                     <FormControl required>
                                                         <InputLabel htmlFor="city">City</InputLabel>
                                                         <Input id="city" city={this.state.city}
-                                                               onChange={this.inputCityChangeHandler} />
+                                                               defaultValue={this.state.city}
+                                                               onChange={this.inputCityChangeHandler}/>
                                                         <FormHelperText className={this.state.cityRequired}>
                                                             <span className="red">required</span>
                                                         </FormHelperText>
                                                     </FormControl>
-                                                    <br /><br />
+                                                    <br/><br/>
                                                     <FormControl required>
                                                         <InputLabel htmlFor="location">State</InputLabel>
                                                         <Select
-                                                            value={this.state.location}
-                                                            onChange={this.locationChangeHandler}
+                                                            value={this.state.stateId}
+                                                            onChange={this.inputStateChangeHandler}
                                                         >
                                                             {this.state.states.map(loc => (
-                                                                <MenuItem key={"loc" + loc.id} value={loc.stateName}>
+                                                                <MenuItem key={"loc" + loc.id} value={loc.id}>
                                                                     {loc.stateName}
                                                                 </MenuItem>
                                                             ))}
@@ -411,11 +524,12 @@ class Checkout extends Component {
                                                             <span className="red">required</span>
                                                         </FormHelperText>
                                                     </FormControl>
-                                                    <br /><br />
+                                                    <br/><br/>
                                                     <FormControl required>
                                                         <InputLabel htmlFor="zipcode">Zipcode</InputLabel>
                                                         <Input id="zipcode" zipcode={this.state.zipcode}
-                                                               onChange={this.inputZipcodeChangeHandler} />
+                                                               defaultValue={this.state.zipcode}
+                                                               onChange={this.inputZipcodeChangeHandler}/>
                                                         <FormHelperText className={this.state.zipcodeRequired}>
                                                             <span className="red">required</span>
                                                         </FormHelperText>
@@ -423,13 +537,13 @@ class Checkout extends Component {
                                                             <span className="red">Zipcode must contain only numbers and must be 6 digits long</span>
                                                         </FormHelperText>
                                                     </FormControl>
-                                                    <br /><br />
+                                                    <br/><br/>
                                                 </div>
                                                 }
                                             </div>
                                             }
                                             {
-                                                index === 1  &&
+                                                index === 1 &&
                                                 <div>
                                                     <FormControl component="fieldset" className={classes.formControl}>
                                                         <FormLabel component="legend">Select Mode of Payment</FormLabel>
@@ -437,12 +551,16 @@ class Checkout extends Component {
                                                             aria-label="Gender"
                                                             name="gender1"
                                                             className={classes.group}
-                                                            value={this.state.value}
-                                                            onChange={this.handleChange}
+                                                            value={this.state.paymentId}
+                                                            onChange={this.paymentHandleChange}
                                                         >
                                                             {this.state.paymentModes.map((payment) => {
                                                                 return (
-                                                                    <FormControlLabel key={payment.id} value={payment.paymentName} control={<Radio />} label={payment.paymentName} />
+                                                                    <FormControlLabel key={payment.id}
+                                                                                      value={""+ payment.id}
+                                                                                      defaultValue={payment.paymentName}
+                                                                                      control={<Radio/>}
+                                                                                      label={payment.paymentName}/>
                                                                 )
                                                             })}
                                                         </RadioGroup>
@@ -475,37 +593,44 @@ class Checkout extends Component {
                         </Stepper>
 
                         <div className={this.state.orderPlaced}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                View the summary and place your order now!
-                            </Typography>
-                            <Button className={classes.button} onClick={this.changeHandler}>Change</Button>
+                            {activeStep === steps.length && (
+                                <Paper square elevation={0} className={classes.resetContainer}>
+                                    <Typography>View the summary and place your order now!</Typography>
+                                    <Button onClick={this.handleReset} className={classes.button}>CHANGE</Button>
+                                </Paper>
+                            )}
                         </div>
                     </div>
 
                     <div className="orderSummary">
-                        <Card style={{height:'70%'}}>
+                        <Card style={{height: '100%'}}>
                             <CardContent>
-                                <Typography style={{marginLeft:'40px',fontWeight:'bold',marginBottom:'30px'}} gutterBottom variant="h5" component="h2">
+                                <Typography style={{marginLeft: '40px', fontWeight: 'bold', marginBottom: '30px'}}
+                                            gutterBottom variant="h5" component="h2">
                                     Summary
                                 </Typography>
-                                {this.props.location.state.cartItems.map(item => (
+                                {cartItems !== undefined && cartItems.map(item => (
                                     <div className="order-body-container" key={"item" + item.id}>
                                         <div className="div-container div-items">{item.type === 'Veg' &&
                                         <FontAwesomeIcon icon="circle" className="veg-item-color"/>}
                                             {item.type === 'Non-Veg' &&
-                                            <FontAwesomeIcon icon="circle" className="non-veg-color"/>}   {item.itemName}
+                                            <FontAwesomeIcon icon="circle" className="non-veg-color"/>} {item.itemName}
                                         </div>
                                         <div className="div-container"> {item.quantity}</div>
-                                        <div className="div-container"><FontAwesomeIcon icon="rupee-sign" /> {item.price}</div>
+                                        <div className="div-container"><FontAwesomeIcon icon="rupee-sign"/> {item.price}
+                                        </div>
                                     </div>
                                 ))}
                                 <Divider/>
                                 <div className="body-container">
-                                    <span style={{fontWeight:'bold'}} className="div-container div-items">Net Amount </span>
-                                    <span className="rupee-container"><FontAwesomeIcon icon="rupee-sign" /> {this.props.location.state.totalCartItemsValue}</span>
+                                    <span style={{fontWeight: 'bold'}}
+                                          className="div-container div-items">Net Amount </span>
+                                    <span className="rupee-container"><FontAwesomeIcon
+                                        icon="rupee-sign"/> {totalCartValue}</span>
                                 </div>
-                                <br />
-                                <Button className="button-container" style={{marginLeft:'55px'}} variant="contained" onClick={this.confirmOrderHandler} color="primary">
+                                <br/>
+                                <Button className="button-container" style={{marginLeft: '55px'}} variant="contained"
+                                        onClick={this.confirmOrderHandler} color="primary">
                                     Place Order
                                 </Button>
                                 <Snackbar
@@ -514,6 +639,7 @@ class Checkout extends Component {
                                         horizontal: 'left',
                                     }}
                                     open={this.state.open}
+                                    autoHideDuration={6000}
                                     onClose={this.handleClose}
                                     ContentProps={{
                                         'aria-describedby': 'message-id',
@@ -527,7 +653,7 @@ class Checkout extends Component {
                                             className={classes.close}
                                             onClick={this.snackBarCloseHandler}
                                         >
-                                            <CloseIcon />
+                                            <CloseIcon/>
                                         </IconButton>,
                                     ]}
                                 />
@@ -537,7 +663,8 @@ class Checkout extends Component {
 
                 </div>
             </div>
-        )}
+        )
+    }
 }
 
-export default Checkout;
+export default withStyles(styles)(Checkout);
